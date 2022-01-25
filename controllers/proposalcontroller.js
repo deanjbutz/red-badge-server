@@ -5,7 +5,7 @@ const { regexp } = require('sequelize/dist/lib/operators');
 
 router.get('/', async (req, res) => {
     try {
-        const proposals = await models.ProposalModel.findAll();
+        const proposals = await models.ProposalModel.findAll({order: [['createdAt', 'DESC']]});
         res.status(200).json(proposals)
     } catch (err) {
         res.status(500).json({
@@ -79,6 +79,63 @@ router.delete('/:id', async (req, res) => {
         }
     } catch (err) {
         res.status(500).json({ message: `Failed to delete proposal. Error: ${err}.`})
+    }
+});
+
+router.put('/:id', validateJWT, async (req, res) => {
+
+    const { 
+        status,
+        ticker1,
+        quantity1,
+        value1,
+        ticker2,
+        quantity2,
+        value2,
+        ticker3,
+        quantity3,
+        value3 } = req.body;
+    const { id } = req.params;
+
+    const query = {
+        where: {
+            id: id
+        }
+    };
+
+    const updatedProposal = { status,
+        ticker1,
+        quantity1,
+        value1,
+        ticker2,
+        quantity2,
+        value2,
+        ticker3,
+        quantity3,
+        value3 }
+
+    if (req.user.role === 'Admin') {
+        try {
+            const update = await models.ProposalModel.update(updatedProposal, query);
+    
+            if (update > 0) {
+                res.status(202).json({
+                    message: `Proposal updated succesfully.`
+                })
+            } else {
+                res.status(500).json({
+                    message: `Failed to update proposal.`
+                })
+            }
+        } catch (err) {
+            res.status(500).json({
+                message: `Failed to update proposal. Error: ${err}.`
+            })
+        }
+    } else {
+        res.status(401).json({
+            message: `Unauthorized.`
+        })
     }
 });
 

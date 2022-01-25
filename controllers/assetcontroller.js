@@ -4,7 +4,7 @@ const validateJWT = require('../middleware/validate-jwt');
 
 router.get('/', async (req, res) => {
     try {
-        const assets = await models.AssetModel.findAll();
+        const assets = await models.AssetModel.findAll({order: [['asset', 'ASC']]});
         res.status(200).json(assets);
     } catch (err) {
         res.status(500).json({
