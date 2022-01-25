@@ -41,6 +41,14 @@ const Proposal = db.define('proposal', {
     },
     value3: {
         type: DataTypes.DECIMAL(10,2),
+    },
+    fName: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    lName: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 });
 

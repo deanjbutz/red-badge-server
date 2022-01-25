@@ -2,6 +2,17 @@ const router = require('express').Router();
 const validateJWT = require('../middleware/validate-jwt');
 const { models } = require('../models');
 
+router.get('/', async (req, res) => {
+    try {
+        const votes = await models.VoteModel.findAll();
+        res.status(200).json(votes)
+    } catch (err) {
+        res.status(500).json({
+            message: `Failed to get votes. Error: ${err}.`
+        })
+    }
+})
+
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {

@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { models } = require('../models');
 const validateJWT = require('../middleware/validate-jwt');
+const { regexp } = require('sequelize/dist/lib/operators');
 
 router.get('/', async (req, res) => {
     try {
@@ -50,7 +51,9 @@ router.post('/', validateJWT, async (req, res) => {
             ticker3: ticker3,
             quantity3: quantity3,
             value3: value3,
-            userId: req.user.id
+            userId: req.user.id,
+            fName: req.user.fName,
+            lName: req.user.lName
         })
         .then(
             post => {
