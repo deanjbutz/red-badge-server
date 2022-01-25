@@ -4,7 +4,7 @@ const { models } = require('../models');
 
 router.get('/', async (req, res) => {
     try {
-        const votes = await models.VoteModel.findAll();
+        const votes = await models.VoteModel.findAll({order: [['createdAt', 'ASC']]});
         res.status(200).json(votes)
     } catch (err) {
         res.status(500).json({
@@ -86,6 +86,21 @@ router.delete('/:id', async (req, res) => {
         }
     } catch (err) {
         res.status(500).json({ message: `Failed to delete votes. Error: ${err}.`})
+    }
+});
+
+router.delete('/vote/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const query = { where: { id: id } };
+        const result = await models.VoteModel.destroy(query);
+        if (result) {
+            res.status(200).json({ message: `Vote deleted successfully.`})
+        } else {
+            res.status(400).json({ message: `Failed to delete vote.` })
+        }
+    } catch (err) {
+        res.status(500).json({ message: `Failed to delete vote. Error: ${err}.`})
     }
 });
 
